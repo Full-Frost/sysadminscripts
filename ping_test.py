@@ -2,6 +2,7 @@
 #Colin O'Rourke ping_test.py 2/4/2022
 import os
 import subprocess
+import time
 
 hostname = "www.google.com" #For testing DNS 
 remoteIP = "129.21.3.17" #RIT DNS 
@@ -51,6 +52,7 @@ def main():
             gatewayTest()
         else:
             print("Please enter a number 1-4")
+        time.sleep(500)
         os.system('clear')
 
 if __name__ == "__main__":
