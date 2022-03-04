@@ -6,38 +6,39 @@ import os
 import subprocess
 
 PWD = os.getcwd()#gets the pwd of the user
-DESKTOP = '/~/Desktop' #potentially allows to cd into desktop
+DESKTOP = '/Desktop/' #potentially allows to cd into desktop
 
 def builder(): #builds the symlinks
     source = input("Please enter the filepath of the source file. ")#enter the file path of the file that is the source of the symlink
     dest = input("Please enter the filename of the destination file. ")#enter the name of what you would like to link the source to 
+    destPath = os.path.expanduser('~') + DESKTOP + dest#get the users home directory add desktop to it and then add the filename to essentially create a filepath
     if os.path.isfile(source):#checks that the source file exists
-        if os.path.exists(dest) and os.path.islink(dest):#makes sure that the destination is not already created 
+        if os.path.exists(destPath) and os.path.islink(destPath):#makes sure that the destination is not already created 
             print('There already exists a symlink on the destination file that is not broken')
         else:#if destination does not exist 
-            os.system('ln -s ' + source + ' ' + dest)#creates the symlink 
-            if os.path.exists(dest) and os.path.islink(dest):#checks to make sure the symlink was made 
-                os.system('mv ' + dest + ' ' + DESKTOP)#moves the file to desktop
-                print('The file ' + dest + 'now points to ' + os.readlink(dest))#letting the user know it was made
+            os.system('ln -s ' + source + ' ' + destPath)#creates the symlink 
+            if os.path.exists(destPath) and os.path.islink(destPath):#checks to make sure the symlink was made 
+                #os.system('mv ' + dest + ' ' + DESKTOP)#moves the file to desktop
+                print('The file ' + destPath + 'now points to ' + os.readlink(destPath))#letting the user know it was made
             else:
                 print('The symlink was not successfully made')#letting the user know that the symlink failed
     else:
         print('Source file does not exist')#filepath to source does not exist 
 
 def remover():
-    target = input('Please provide the name of the symlink that you would like to remove. ')#user enters the name of the file pathe they want to remove 
+    target = input('Please provide the filepath of the symlink that you would like to remove. ')#user enters the name of the filepath they want to remove 
     if os.path.exists(target) and os.path.islink(target):#makes sure that the symlink exists 
         os.system('unlink ' + target) #removes the symlink 
         print('symlink has been removed')#letting the user know that the symlink has been removed
     else:
         print('This is an invalid target')#filepath to the symlink is invalid 
 
-def reporter():
+def logger():
     os.chdir(DESKTOP)#makes sure we are in desktop
     report = subprocess.run('find . -type l', stdout=subprocess.PIPE)#finds the symlinks in the Desktop directory
     print('SymLink Report Generator\n')
     reportGen = report.stdout.decode('utf-8').split('/')#reads the output of the command and splits it into a list 
-    counter = 0#counter 
+    counter = 0 #counter 
     for i in reportGen:#navigates through the list
         if os.is_symlink(reportGen[i]):#checks to determine if list entry is a symlink 
             print('The file ' + reportGen[i] + ' is a symlink that points to ' + os.readlink(reportGen[i]))#if is is it reads out the output and the filepath that the link points to 
@@ -54,7 +55,7 @@ def main():
         elif path == 'r':
             remover()#run remover function
         elif path == 'l':
-            reporter()#run reporter function
+            logger()#run reporter function
         elif path == 'quit':
             print("Thanks")
             quit()#quit the program
