@@ -34,16 +34,17 @@ def remover():
         print('This is an invalid target')#filepath to the symlink is invalid 
 
 def logger():
-    os.chdir(DESKTOP)#makes sure we are in desktop
-    report = subprocess.run('find . -type l', stdout=subprocess.PIPE)#finds the symlinks in the Desktop directory
+    os.chdir(os.path.expanduser('~') + DESKTOP)#makes sure we are in desktop
+    report = subprocess.run('find -L . -xtype l -exec ls -al {} \;', stdout=subprocess.PIPE)#finds the symlinks in the Desktop directory
     print('SymLink Report Generator\n')
-    reportGen = report.stdout.decode('utf-8').split('/')#reads the output of the command and splits it into a list 
-    counter = 0 #counter 
-    for i in reportGen:#navigates through the list
-        if os.is_symlink(reportGen[i]):#checks to determine if list entry is a symlink 
-            print('The file ' + reportGen[i] + ' is a symlink that points to ' + os.readlink(reportGen[i]))#if is is it reads out the output and the filepath that the link points to 
-            count += 1#adds 1 to the counter 
-    print('The total number of available symlinks in the Desktop directory is %d', counter)#prints the total number of symlinks at the end 
+    reportGen = report.stdout.decode('utf-8')#reads the output of the command and splits it into a list 
+    print(reportGen)
+    #counter = 0 #counter 
+    #for i in reportGen:#navigates through the list
+    #    if os.is_symlink(reportGen[i]):#checks to determine if list entry is a symlink 
+    #        print('The file ' + reportGen[i] + ' is a symlink that points to ' + os.readlink(reportGen[i]))#if is is it reads out the output and the filepath that the link points to 
+    #        count += 1#adds 1 to the counter 
+    #print('The total number of available symlinks in the Desktop directory is %d', counter)#prints the total number of symlinks at the end 
 
 def main():
     os.system('clear')#clears terminal
