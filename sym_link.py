@@ -1,7 +1,7 @@
 #!//usr/bin/python3
 #Colin O'Rourke sym_link.py 3/4/2022
 
-from importlib.resources import path
+#from importlib.resources import path
 import os
 import subprocess
 
@@ -35,10 +35,17 @@ def remover():
 
 def logger():
     os.chdir(os.path.expanduser('~') + DESKTOP)#makes sure we are in desktop
-    report = subprocess.run('find -L . -xtype l -exec ls -al {} \;', stdout=subprocess.PIPE)#finds the symlinks in the Desktop directory
+    #report = subprocess.run('find -L . -xtype l -exec ls -al {} \;', stdout=subprocess.PIPE)#finds the symlinks in the Desktop directory
     print('SymLink Report Generator\n')
-    reportGen = report.stdout.decode('utf-8')#reads the output of the command and splits it into a list 
-    print(reportGen)
+    os.system('find -L . -xtype l -exec ls -al {} \;')#get the symlinks in the directory
+    count = 0#counter
+    for root, dir, files in os.walk(os.path.expanduser('~') + DESKTOP):#iterate through desktop
+        for filename in files:#iterate through all the files 
+            if os.path.islink(os.path.join(os.path.expanduser('~') + DESKTOP, filename)):##checks to see if the file is a link 
+                count += 1#adds to counter if it is
+    print('The number of symlinks in the desktop directory is ' + str(count) + '\n')#prints the number of symlinks in the directory 
+    #reportGen = report.stdout.decode('utf-8').split('\n')#reads the output of the command and splits it into a list 
+    #print(len(reportGen))
     #counter = 0 #counter 
     #for i in reportGen:#navigates through the list
     #    if os.is_symlink(reportGen[i]):#checks to determine if list entry is a symlink 
@@ -46,11 +53,12 @@ def logger():
     #        count += 1#adds 1 to the counter 
     #print('The total number of available symlinks in the Desktop directory is %d', counter)#prints the total number of symlinks at the end 
 
+
 def main():
     os.system('clear')#clears terminal
     print('Your current directory is: ' + PWD)#displays current directory
     while(1):#infinite loop unless quit is called
-        path = input('[b] to build a symlink between two files.\n[r] in order to remove a symlink.\n[l] for a list of all active symlinks.\n[quit] to exit the program.')#menu
+        path = input('[b] to build a symlink between two files.\n[r] in order to remove a symlink.\n[l] for a list of all active symlinks.\n[quit] to exit the program.\n')#menu
         if path == 'b':
             builder()#run builder function
         elif path == 'r':
@@ -62,3 +70,6 @@ def main():
             quit()#quit the program
         else:
             print('Invalid input')#invalid input 
+        
+
+main()
