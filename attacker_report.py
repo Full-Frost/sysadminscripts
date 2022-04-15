@@ -40,4 +40,3 @@ def main():
     parser(filepath)#runs the parser function 
 
 main()
-
